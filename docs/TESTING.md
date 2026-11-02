@@ -38,6 +38,8 @@ projeto ("Relatório técnico de testes — PipeWire e WirePlumber").
 | Conjunto de perfis com `element-output = PCM` | WirePlumber abortou (`'data->description' failed at compat.c:123`); restaurado à mão |
 | **Conjunto de perfis com `paths-output = analog-output` + regra do WirePlumber** | perfis off, analog-stereo, pro-audio; IEC958 salvo ignorado; rota `analog-output`; 1.00→147, 0.70→103, 0.50→74, 0.30→44, 0.20→29, 0.10→15, 0.05→7, 0.01→1; `softVolumes` 1,0 em todas; mudo → `PCM Playback Switch` off; teclas e controle do GNOME mudaram o hardware (0.24→36, 0.58→86, 0.90→133, 1.00→147); restauração completa |
 
+| **Botões da caixa** (perfil IEC958, sem o projeto) | a caixa tem uma interface HID ("HECATE G2000 PRO Consumer Control"); **+**/**−** mudaram o volume do sistema (1.00 → 0.40 → 1.00) e o `PCM` ficou em 147: os botões enviam teclas de volume, não mudam a caixa sozinhos. A caixa declara pela USB uma única unidade de volume (FEATURE_UNIT 2: volume por canal e mudo) |
+
 Log do WirePlumber no teste: `The decibel volume range for element 'PCM' (-2837 dB - -94 dB) has
 negative maximum. Disabling the decibel range.`
 
@@ -47,7 +49,7 @@ negative maximum. Disabling the decibel range.`
 | --- | --- |
 | Arquivos nas pastas do sistema (`/usr/share`), via .deb | mesmo mecanismo, outra pasta da busca; conferir com `hecate-g2000-pro-volume status` depois de instalar |
 | Outras distribuições, outras versões do PipeWire/WirePlumber 0.5.x | não testado |
-| Se o degrau 0 do hardware é silêncio | não verificado |
+| Botões da caixa com o projeto instalado | não medido diretamente; seguem o mesmo caminho das teclas de volume do teclado (mesmo evento, mesma saída padrão), que mudaram o hardware no teste |
 | PulseAudio sem PipeWire | não suportado |
 
 ## Depois de instalar o .deb (conferência na máquina real)

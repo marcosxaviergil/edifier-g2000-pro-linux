@@ -3,18 +3,24 @@
 
 # Introduction {#introduction}
 
-Hecate G2000 PRO Volume makes the system volume control change the hardware volume of the Edifier Hecate G2000 PRO USB speaker, through the speaker's own ALSA control (**PCM Playback Volume**), instead of lowering the sound in software.
+Hecate G2000 PRO Volume makes the system volume control change the volume of the Edifier Hecate G2000 PRO USB speaker itself, through the speaker's hardware control (**PCM Playback Volume**), instead of lowering the sound in the computer.
 
-- With the speaker as the output, the software volume always stays at 100%: the volume control, the volume keys and the system mute change only the speaker's hardware.
-- It works with any desktop (GNOME, KDE Plasma and others) and with every application, because they all use PipeWire.
-- Only the G2000 PRO (USB `35bb:b065`) is affected. Other audio devices stay as they are.
-- Nothing runs in the background: the solution is PipeWire and WirePlumber configuration, plus the `hecate-g2000-pro-volume` command to check and test it.
+With the speaker as the output:
+
+- The system volume bar shows and changes the **speaker's volume**.
+- The keyboard volume keys and the speaker's **+** and **−** buttons change that same volume, and the bar follows.
+- The system mute turns the **speaker's mute** on and off (**PCM Playback Switch**).
+- The computer's (software) volume always stays at **100%** and does not appear in any control.
+- Each application's volume keeps working as always.
+
+Only the G2000 PRO (USB `35bb:b065`) is affected; other audio devices stay as they are. It works with any desktop (GNOME, KDE Plasma and others), because they all use PipeWire. Nothing runs in the background: it is two PipeWire and WirePlumber configuration files, plus the `hecate-g2000-pro-volume` command to check and test.
 
 # Requirements {#requirements}
 
-- Linux with PipeWire and WirePlumber 0.5 or newer. Tested on Debian 13 (PipeWire 1.4.2, WirePlumber 0.5.8). To see the version: `wireplumber --version`.
+- Linux with PipeWire and WirePlumber 0.5 or newer. To see the version: `wireplumber --version`.
 - Python 3.11 or newer, for the `hecate-g2000-pro-volume` command.
-- The `wpctl`, `pw-cli` and `amixer` commands (Debian and Ubuntu: packages `wireplumber`, `pipewire-bin` and `alsa-utils`).
+- The `wpctl`, `pw-cli` and `amixer` commands (Debian and Ubuntu: packages `wireplumber`, `pipewire-bin` and `alsa-utils`). The .deb package already installs them.
+- The speaker connected to the computer by the USB cable.
 
 # Installation {#installation}
 
@@ -42,7 +48,7 @@ cd hecate-g2000-pro-volume-<version>
 
 If a file with the same name and other content already exists, it is kept and the installation stops with a message. To replace it, use `./hecate-g2000-pro-volume install --force`.
 
-## Apply the configuration {#apply}
+## Activate {#apply}
 
 1. Restart WirePlumber, or log out and log in again:
 
@@ -50,15 +56,22 @@ If a file with the same name and other content already exists, it is kept and th
 systemctl --user restart wireplumber.service
 ```
 
-2. If the speaker was on the digital profile (IEC958), its output gets a new name and the default output may move to another device. Choose **HECATE G2000 PRO** once as the output in the sound settings. If you use Easy Effects, choose the speaker as its output too.
+2. In the sound settings, choose **HECATE G2000 PRO** as the output. The speaker's output is now the analog stereo one ("Analog Stereo"); if it was "Digital Stereo (IEC958)" before, the default output may have moved to another device. If you use Easy Effects, choose the speaker as its output too.
+3. Check with `hecate-g2000-pro-volume status`: the result must be **Result: OK**.
 
 ![Sound settings: HECATE G2000 PRO as the output](configuracoes_som_saida.jpg)
 
 # Usage {#usage}
 
-Use the volume control, the volume keys and mute as always. Every change goes straight to the speaker's hardware volume.
+## Speaker volume and mute {#volume}
 
-![System volume control with HECATE G2000 PRO](controle_volume_gnome.jpg)
+Use the system volume bar, the keyboard volume keys or the speaker's **+** and **−** buttons. All of them change the same volume: the speaker's. The bar shows the speaker's volume and follows any of them. The system mute silences the speaker.
+
+![System volume bar with HECATE G2000 PRO](controle_volume_gnome.jpg)
+
+## Each application's volume {#app-volume}
+
+In the per-application volume control (in the sound settings, or in programs such as pavucontrol), each application keeps its own volume, adjusted in the computer, as always. It adds to the speaker's volume.
 
 ## Check the installation: status {#status}
 
@@ -76,31 +89,23 @@ Shows where the configuration is installed, whether WirePlumber loaded it, the a
 hecate-g2000-pro-volume diagnose
 ```
 
-Lowers the volume in three steps below the current one, mutes, and checks that the hardware control follows and that the software volume stays at 100%. At the end, it sets the volume and mute back to what they were. The sound never gets louder than before the test. Each check shows **PASS** or **FAIL**.
+Lowers the volume in three steps below the current one, mutes, and checks that the hardware control follows and that the software volume stays at 100%. At the end, it sets the volume and mute back to what they were. The sound never gets louder than before the test; with the volume below 5%, the test asks you to raise it. Each check shows **PASS** or **FAIL**.
 
 ![Terminal: hecate-g2000-pro-volume diagnose](terminal_diagnose.jpg)
 
 # How it works {#how-it-works}
 
-- **Own profile set.** PipeWire's default profile set also offers the digital IEC958 profile for the speaker, whose mixer path has no volume control: with it, every volume change is software only. This project's configuration offers only the analog profile, whose path uses the speaker's **PCM** control for volume and mute.
-- **Stored profile.** An IEC958 profile stored before is ignored, because it no longer exists; WirePlumber picks the analog one by itself.
-- **Hardware only.** The driver reports the speaker's volume from −28.37 dB to −0.94 dB. As the maximum is negative, PipeWire disregards this decibel information and applies the volume only to the 148 hardware steps (0 to 147), with no software volume on top.
+- **The speaker's volume control.** Over USB, the speaker offers one volume control (left and right) and one mute. Linux shows them as **PCM Playback Volume** and **PCM Playback Switch**.
+- **The speaker's buttons.** The speaker also presents itself to the computer as a media keyboard ("HECATE G2000 PRO Consumer Control"): the **+** and **−** buttons send the volume keys. That is why they act exactly like the keyboard volume keys.
+- **Analog profile.** PipeWire's default profile set also offers the digital IEC958 profile for the speaker, which does not use its volume control: with it, the volume was lowered in the computer. This project's configuration offers only the analog profile, which uses the speaker's **PCM** control for volume and mute. An IEC958 profile chosen before is set aside, and WirePlumber uses the analog one by itself.
+- **Volume only in the speaker.** The speaker's control has 148 steps (0 to 147), from −28.37 dB to −0.94 dB. PipeWire applies the volume bar straight to these steps, with no software volume on top.
 - **Only this speaker.** The WirePlumber rule applies only to the USB device `35bb:b065`.
 - **Files.** .deb package: `/usr/share/wireplumber/wireplumber.conf.d/60-edifier-hecate-g2000-pro.conf` and `/usr/share/alsa-card-profile/mixer/profile-sets/edifier-hecate-g2000-pro.conf`. Per-user installation: the same names in `~/.config/wireplumber/wireplumber.conf.d/` and `~/.config/alsa-card-profile/mixer/profile-sets/`.
-
-# Limitations {#limitations}
-
-- **Speaker buttons.** The speaker's own volume button and control are a separate adjustment: ALSA does not see them, and the system volume does not follow what they do.
-- **0% volume.** It is hardware step 0. Whether that step is complete silence was not verified; for silence, use mute.
-- **Digital output.** The IEC958 profile no longer appears for this speaker.
-- **WirePlumber 0.4.** Not supported: it uses another configuration format (Lua).
-- **No PipeWire.** Systems with PulseAudio only were not tested and are not supported.
-- **No systemd.** Restart WirePlumber the way your distribution does, or log out and log in again.
 
 # Troubleshooting {#troubleshooting}
 
 - **"The configuration is installed but not loaded yet."** WirePlumber was not restarted yet: `systemctl --user restart wireplumber.service`.
-- **No sound after installing.** The default output moved to another device, because the name of the speaker's output changed. Choose HECATE G2000 PRO as the output (and in Easy Effects, if you use it).
+- **No sound after activating.** The default output moved to another device. Choose HECATE G2000 PRO as the output (and in Easy Effects, if you use it).
 - **"PipeWire does not see the speaker."** Check the USB cable and that the speaker is on.
 - **"wpctl is not installed"** (or `pw-cli`, `amixer`). Install the package the message names.
 - **A file shows as "different" in status.** A file with the same name and other content already existed. Check it and, if it can be replaced, run `hecate-g2000-pro-volume install --force`.

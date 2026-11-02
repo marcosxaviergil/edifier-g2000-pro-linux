@@ -14,7 +14,7 @@ impediria a tecla de aumentar volume de gerar qualquer evento.
 ## Solução
 
 ```
-Controle de volume / teclas / mudo (GNOME, KDE, qualquer app)
+Barra de volume / teclas do teclado / botões + e − da caixa (teclas HID "Consumer Control") / mudo
         │  (todos usam o PipeWire)
         ▼
 WirePlumber 0.5 ── regra 60-edifier-hecate-g2000-pro.conf

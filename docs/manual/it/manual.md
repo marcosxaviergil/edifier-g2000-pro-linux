@@ -3,18 +3,24 @@
 
 # Introduzione {#introduction}
 
-Hecate G2000 PRO Volume fa sì che il controllo del volume del sistema cambi il volume fisico dell'altoparlante USB Edifier Hecate G2000 PRO, tramite il controllo ALSA dell'altoparlante stesso (**PCM Playback Volume**), invece di abbassare il suono via software.
+Hecate G2000 PRO Volume fa sì che il controllo del volume del sistema cambi il volume dell'altoparlante USB Edifier Hecate G2000 PRO stesso, tramite il suo controllo hardware (**PCM Playback Volume**), invece di abbassare il suono nel computer.
 
-- Con l'altoparlante come uscita, il volume software resta sempre al 100%: il controllo del volume, i tasti del volume e il muto del sistema agiscono solo sull'hardware dell'altoparlante.
-- Funziona con qualsiasi desktop (GNOME, KDE Plasma e altri) e con tutte le applicazioni, perché usano tutte PipeWire.
-- Riguarda solo la G2000 PRO (USB `35bb:b065`). Gli altri dispositivi audio restano come sono.
-- Nessun programma gira in background: la soluzione è una configurazione di PipeWire e WirePlumber, più il comando `hecate-g2000-pro-volume` per verificarla e provarla.
+Con l'altoparlante come uscita:
+
+- La barra del volume del sistema mostra e cambia il **volume dell'altoparlante**.
+- I tasti del volume della tastiera e i pulsanti **+** e **−** dell'altoparlante cambiano lo stesso volume, e la barra li segue.
+- Il muto del sistema attiva e disattiva il **muto dell'altoparlante** (**PCM Playback Switch**).
+- Il volume del computer (software) resta sempre al **100%** e non appare in nessun controllo.
+- Il volume di ogni applicazione continua a funzionare come sempre.
+
+Riguarda solo la G2000 PRO (USB `35bb:b065`); gli altri dispositivi audio restano come sono. Funziona con qualsiasi desktop (GNOME, KDE Plasma e altri), perché usano tutti PipeWire. Nessun programma gira in background: sono due file di configurazione di PipeWire e WirePlumber, più il comando `hecate-g2000-pro-volume` per verificare e provare.
 
 # Requisiti {#requirements}
 
-- Linux con PipeWire e WirePlumber 0.5 o successivo. Provato su Debian 13 (PipeWire 1.4.2, WirePlumber 0.5.8). Per vedere la versione: `wireplumber --version`.
+- Linux con PipeWire e WirePlumber 0.5 o successivo. Per vedere la versione: `wireplumber --version`.
 - Python 3.11 o successivo, per il comando `hecate-g2000-pro-volume`.
-- I comandi `wpctl`, `pw-cli` e `amixer` (Debian e Ubuntu: pacchetti `wireplumber`, `pipewire-bin` e `alsa-utils`).
+- I comandi `wpctl`, `pw-cli` e `amixer` (Debian e Ubuntu: pacchetti `wireplumber`, `pipewire-bin` e `alsa-utils`). Il pacchetto .deb li installa già.
+- L'altoparlante collegato al computer con il cavo USB.
 
 # Installazione {#installation}
 
@@ -42,7 +48,7 @@ cd hecate-g2000-pro-volume-<versione>
 
 Se esiste già un file con lo stesso nome e un contenuto diverso, viene mantenuto e l'installazione si ferma con un messaggio. Per sostituirlo, usi `./hecate-g2000-pro-volume install --force`.
 
-## Applicare la configurazione {#apply}
+## Attivare {#apply}
 
 1. Riavvii WirePlumber, oppure esca dalla sessione e rientri:
 
@@ -50,15 +56,22 @@ Se esiste già un file con lo stesso nome e un contenuto diverso, viene mantenut
 systemctl --user restart wireplumber.service
 ```
 
-2. Se l'altoparlante era sul profilo digitale (IEC958), la sua uscita cambia nome e l'uscita predefinita può passare a un altro dispositivo. Scelga **HECATE G2000 PRO** una volta come uscita nelle impostazioni audio. Se usa Easy Effects, scelga l'altoparlante anche come sua uscita.
+2. Nelle impostazioni audio, scelga **HECATE G2000 PRO** come uscita. L'uscita dell'altoparlante diventa quella stereo analogica; se prima era quella stereo digitale (IEC958), l'uscita predefinita può essere passata a un altro dispositivo. Se usa Easy Effects, scelga l'altoparlante anche come sua uscita.
+3. Verifichi con `hecate-g2000-pro-volume status`: il risultato deve essere **Result: OK**.
 
 ![Impostazioni audio: HECATE G2000 PRO come uscita](configuracoes_som_saida.jpg)
 
 # Uso {#usage}
 
-Usi il controllo del volume, i tasti del volume e il muto come sempre. Ogni modifica va direttamente al volume fisico dell'altoparlante.
+## Volume e muto dell'altoparlante {#volume}
 
-![Controllo del volume del sistema con HECATE G2000 PRO](controle_volume_gnome.jpg)
+Usi la barra del volume del sistema, i tasti del volume della tastiera o i pulsanti **+** e **−** dell'altoparlante. Tutti cambiano lo stesso volume: quello dell'altoparlante. La barra mostra il volume dell'altoparlante e segue ognuno di essi. Il muto del sistema spegne il suono nell'altoparlante.
+
+![Barra del volume del sistema con HECATE G2000 PRO](controle_volume_gnome.jpg)
+
+## Volume di ogni applicazione {#app-volume}
+
+Nel controllo del volume per applicazione (nelle impostazioni audio, o in programmi come pavucontrol), ogni applicazione mantiene il proprio volume, regolato nel computer, come sempre. Si somma al volume dell'altoparlante.
 
 ## Verificare l'installazione: status {#status}
 
@@ -76,31 +89,23 @@ Mostra dove è installata la configurazione, se WirePlumber l'ha caricata, il pr
 hecate-g2000-pro-volume diagnose
 ```
 
-Abbassa il volume in tre passi sotto quello attuale, attiva il muto e verifica che il controllo hardware segua e che il volume software resti al 100%. Alla fine riporta il volume e il muto com'erano. Il suono non diventa mai più forte di prima della prova. Ogni verifica appare come **PASS** o **FAIL**.
+Abbassa il volume in tre passi sotto quello attuale, attiva il muto e verifica che il controllo hardware segua e che il volume software resti al 100%. Alla fine riporta il volume e il muto com'erano. Il suono non diventa mai più forte di prima della prova; con il volume sotto il 5%, la prova chiede di alzarlo. Ogni verifica appare come **PASS** o **FAIL**.
 
 ![Terminale: hecate-g2000-pro-volume diagnose](terminal_diagnose.jpg)
 
 # Come funziona {#how-it-works}
 
-- **Insieme di profili proprio.** L'insieme di profili predefinito di PipeWire offre per l'altoparlante anche il profilo digitale IEC958, il cui percorso del mixer non ha un controllo del volume: con esso, ogni regolazione del volume è solo software. La configurazione di questo progetto offre solo il profilo analogico, il cui percorso usa il controllo **PCM** dell'altoparlante per volume e muto.
-- **Profilo salvato.** Un profilo IEC958 salvato in precedenza viene ignorato, perché non esiste più; WirePlumber sceglie da solo quello analogico.
-- **Solo hardware.** Il driver indica il volume dell'altoparlante da −28,37 dB a −0,94 dB. Poiché il massimo è negativo, PipeWire scarta questa informazione in decibel e applica il volume solo ai 148 passi dell'hardware (da 0 a 147), senza volume software sopra.
+- **Il controllo del volume dell'altoparlante.** Tramite USB, l'altoparlante offre un controllo del volume (sinistro e destro) e uno del muto. Linux li mostra come **PCM Playback Volume** e **PCM Playback Switch**.
+- **I pulsanti dell'altoparlante.** L'altoparlante si presenta al computer anche come tastiera multimediale ("HECATE G2000 PRO Consumer Control"): i pulsanti **+** e **−** inviano i tasti del volume. Per questo agiscono esattamente come i tasti del volume della tastiera.
+- **Profilo analogico.** L'insieme di profili predefinito di PipeWire offre per l'altoparlante anche il profilo digitale IEC958, che non usa il suo controllo del volume: con esso il volume veniva abbassato nel computer. La configurazione di questo progetto offre solo il profilo analogico, che usa il controllo **PCM** dell'altoparlante per volume e muto. Un profilo IEC958 scelto in precedenza viene messo da parte e WirePlumber usa da solo quello analogico.
+- **Volume solo nell'altoparlante.** Il controllo dell'altoparlante ha 148 passi (da 0 a 147), da −28,37 dB a −0,94 dB. PipeWire applica la barra del volume direttamente a questi passi, senza volume software sopra.
 - **Solo questo altoparlante.** La regola di WirePlumber vale solo per il dispositivo USB `35bb:b065`.
 - **File.** Pacchetto .deb: `/usr/share/wireplumber/wireplumber.conf.d/60-edifier-hecate-g2000-pro.conf` e `/usr/share/alsa-card-profile/mixer/profile-sets/edifier-hecate-g2000-pro.conf`. Installazione per utente: gli stessi nomi in `~/.config/wireplumber/wireplumber.conf.d/` e `~/.config/alsa-card-profile/mixer/profile-sets/`.
-
-# Limitazioni {#limitations}
-
-- **Tasti dell'altoparlante.** Il tasto e il controllo del volume dell'altoparlante sono una regolazione separata: ALSA non li vede e il volume del sistema non segue ciò che fanno.
-- **Volume 0%.** Corrisponde al passo 0 dell'hardware. Non è stato verificato se quel passo sia silenzio totale; per il silenzio, usi il muto.
-- **Uscita digitale.** Il profilo IEC958 non appare più per questo altoparlante.
-- **WirePlumber 0.4.** Non supportato: usa un altro formato di configurazione (Lua).
-- **Senza PipeWire.** I sistemi solo con PulseAudio non sono stati provati e non sono supportati.
-- **Senza systemd.** Riavvii WirePlumber nel modo previsto dalla sua distribuzione, oppure esca dalla sessione e rientri.
 
 # Problemi comuni {#troubleshooting}
 
 - **"The configuration is installed but not loaded yet."** WirePlumber non è ancora stato riavviato: `systemctl --user restart wireplumber.service`.
-- **Nessun suono dopo l'installazione.** L'uscita predefinita è passata a un altro dispositivo, perché il nome dell'uscita dell'altoparlante è cambiato. Scelga HECATE G2000 PRO come uscita (e in Easy Effects, se lo usa).
+- **Nessun suono dopo l'attivazione.** L'uscita predefinita è passata a un altro dispositivo. Scelga HECATE G2000 PRO come uscita (e in Easy Effects, se lo usa).
 - **"PipeWire does not see the speaker."** Controlli il cavo USB e che l'altoparlante sia acceso.
 - **"wpctl is not installed"** (oppure `pw-cli`, `amixer`). Installi il pacchetto indicato nel messaggio.
 - **Un file appare come "different" in status.** Esisteva già un file con lo stesso nome e un contenuto diverso. Lo controlli e, se può essere sostituito, esegua `hecate-g2000-pro-volume install --force`.

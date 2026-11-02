@@ -13,7 +13,7 @@ Imagens usadas hoje:
 | Nome | O que mostrar |
 | --- | --- |
 | `configuracoes_som_saida.jpg` | Configurações → Som → Saída, com a HECATE G2000 PRO escolhida |
-| `controle_volume_gnome.jpg` | Controle de volume do sistema (Configurações rápidas do GNOME) com a HECATE G2000 PRO |
+| `controle_volume_gnome.jpg` | Barra de volume do sistema (Configurações rápidas do GNOME) com a HECATE G2000 PRO |
 | `terminal_status.jpg` | Terminal com `hecate-g2000-pro-volume status` terminando em `Result: OK` |
 | `terminal_diagnose.jpg` | Terminal com `hecate-g2000-pro-volume diagnose` e as três linhas `PASS` |
 

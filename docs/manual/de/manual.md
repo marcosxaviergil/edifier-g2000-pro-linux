@@ -3,18 +3,24 @@
 
 # Einführung {#introduction}
 
-Hecate G2000 PRO Volume sorgt dafür, dass die Lautstärkeregelung des Systems die Hardware-Lautstärke des USB-Lautsprechers Edifier Hecate G2000 PRO ändert, über den ALSA-Regler des Lautsprechers selbst (**PCM Playback Volume**), statt den Ton per Software abzusenken.
+Hecate G2000 PRO Volume sorgt dafür, dass die Lautstärkeregelung des Systems die Lautstärke des USB-Lautsprechers Edifier Hecate G2000 PRO selbst ändert, über dessen Hardware-Regler (**PCM Playback Volume**), statt den Ton im Computer abzusenken.
 
-- Mit dem Lautsprecher als Ausgabe bleibt die Software-Lautstärke immer bei 100 %: Lautstärkeregler, Lautstärketasten und Stummschaltung des Systems ändern nur die Hardware des Lautsprechers.
-- Es funktioniert mit jeder Arbeitsumgebung (GNOME, KDE Plasma und andere) und mit allen Anwendungen, weil alle PipeWire verwenden.
-- Nur der G2000 PRO (USB `35bb:b065`) ist betroffen. Andere Audiogeräte bleiben, wie sie sind.
-- Es läuft kein Programm im Hintergrund: Die Lösung ist eine Konfiguration für PipeWire und WirePlumber, dazu der Befehl `hecate-g2000-pro-volume` zum Prüfen und Testen.
+Mit dem Lautsprecher als Ausgabe:
+
+- Der Lautstärkebalken des Systems zeigt und ändert die **Lautstärke des Lautsprechers**.
+- Die Lautstärketasten der Tastatur und die Tasten **+** und **−** am Lautsprecher ändern dieselbe Lautstärke, und der Balken folgt.
+- Die Stummschaltung des Systems schaltet die **Stummschaltung des Lautsprechers** ein und aus (**PCM Playback Switch**).
+- Die Lautstärke des Computers (Software) bleibt immer bei **100 %** und erscheint in keinem Regler.
+- Die Lautstärke jeder Anwendung funktioniert wie immer.
+
+Nur der G2000 PRO (USB `35bb:b065`) ist betroffen; andere Audiogeräte bleiben, wie sie sind. Es funktioniert mit jeder Arbeitsumgebung (GNOME, KDE Plasma und andere), weil alle PipeWire verwenden. Es läuft kein Programm im Hintergrund: Es sind zwei Konfigurationsdateien für PipeWire und WirePlumber, dazu der Befehl `hecate-g2000-pro-volume` zum Prüfen und Testen.
 
 # Voraussetzungen {#requirements}
 
-- Linux mit PipeWire und WirePlumber 0.5 oder neuer. Getestet unter Debian 13 (PipeWire 1.4.2, WirePlumber 0.5.8). Version anzeigen: `wireplumber --version`.
+- Linux mit PipeWire und WirePlumber 0.5 oder neuer. Version anzeigen: `wireplumber --version`.
 - Python 3.11 oder neuer, für den Befehl `hecate-g2000-pro-volume`.
-- Die Befehle `wpctl`, `pw-cli` und `amixer` (Debian und Ubuntu: Pakete `wireplumber`, `pipewire-bin` und `alsa-utils`).
+- Die Befehle `wpctl`, `pw-cli` und `amixer` (Debian und Ubuntu: Pakete `wireplumber`, `pipewire-bin` und `alsa-utils`). Das .deb-Paket installiert sie bereits.
+- Der Lautsprecher ist über das USB-Kabel mit dem Computer verbunden.
 
 # Installation {#installation}
 
@@ -42,7 +48,7 @@ cd hecate-g2000-pro-volume-<Version>
 
 Gibt es schon eine Datei mit demselben Namen und anderem Inhalt, bleibt sie erhalten und die Installation bricht mit einer Meldung ab. Zum Ersetzen verwenden Sie `./hecate-g2000-pro-volume install --force`.
 
-## Konfiguration anwenden {#apply}
+## Aktivieren {#apply}
 
 1. Starten Sie WirePlumber neu, oder melden Sie sich ab und wieder an:
 
@@ -50,15 +56,22 @@ Gibt es schon eine Datei mit demselben Namen und anderem Inhalt, bleibt sie erha
 systemctl --user restart wireplumber.service
 ```
 
-2. War der Lautsprecher im digitalen Profil (IEC958), bekommt seine Ausgabe einen neuen Namen, und die Standardausgabe kann zu einem anderen Gerät wechseln. Wählen Sie **HECATE G2000 PRO** einmal als Ausgabe in den Toneinstellungen. Wenn Sie Easy Effects verwenden, wählen Sie den Lautsprecher auch dort als Ausgabe.
+2. Wählen Sie in den Toneinstellungen **HECATE G2000 PRO** als Ausgabe. Die Ausgabe des Lautsprechers ist jetzt die analoge Stereo-Ausgabe; war sie vorher die digitale Stereo-Ausgabe (IEC958), kann die Standardausgabe zu einem anderen Gerät gewechselt sein. Wenn Sie Easy Effects verwenden, wählen Sie den Lautsprecher auch dort als Ausgabe.
+3. Prüfen Sie mit `hecate-g2000-pro-volume status`: Das Ergebnis muss **Result: OK** sein.
 
 ![Toneinstellungen: HECATE G2000 PRO als Ausgabe](configuracoes_som_saida.jpg)
 
 # Verwendung {#usage}
 
-Verwenden Sie Lautstärkeregler, Lautstärketasten und Stummschaltung wie immer. Jede Änderung geht direkt an die Hardware-Lautstärke des Lautsprechers.
+## Lautstärke und Stummschaltung des Lautsprechers {#volume}
 
-![Lautstärkeregler des Systems mit HECATE G2000 PRO](controle_volume_gnome.jpg)
+Verwenden Sie den Lautstärkebalken des Systems, die Lautstärketasten der Tastatur oder die Tasten **+** und **−** am Lautsprecher. Alle ändern dieselbe Lautstärke: die des Lautsprechers. Der Balken zeigt die Lautstärke des Lautsprechers und folgt jeder dieser Änderungen. Die Stummschaltung des Systems schaltet den Ton am Lautsprecher ab.
+
+![Lautstärkebalken des Systems mit HECATE G2000 PRO](controle_volume_gnome.jpg)
+
+## Lautstärke jeder Anwendung {#app-volume}
+
+In der Lautstärkeregelung pro Anwendung (in den Toneinstellungen oder in Programmen wie pavucontrol) behält jede Anwendung ihre eigene Lautstärke, die wie immer im Computer eingestellt wird. Sie wirkt zusätzlich zur Lautstärke des Lautsprechers.
 
 ## Installation prüfen: status {#status}
 
@@ -76,31 +89,23 @@ Zeigt, wo die Konfiguration installiert ist, ob WirePlumber sie geladen hat, das
 hecate-g2000-pro-volume diagnose
 ```
 
-Senkt die Lautstärke in drei Schritten unter die aktuelle, schaltet stumm und prüft, dass der Hardware-Regler folgt und die Software-Lautstärke bei 100 % bleibt. Am Ende stellt es Lautstärke und Stummschaltung wieder her. Der Ton wird nie lauter als vor dem Test. Jede Prüfung zeigt **PASS** oder **FAIL**.
+Senkt die Lautstärke in drei Schritten unter die aktuelle, schaltet stumm und prüft, dass der Hardware-Regler folgt und die Software-Lautstärke bei 100 % bleibt. Am Ende stellt es Lautstärke und Stummschaltung wieder her. Der Ton wird nie lauter als vor dem Test; bei einer Lautstärke unter 5 % bittet der Test, sie zu erhöhen. Jede Prüfung zeigt **PASS** oder **FAIL**.
 
 ![Terminal: hecate-g2000-pro-volume diagnose](terminal_diagnose.jpg)
 
 # Funktionsweise {#how-it-works}
 
-- **Eigener Profilsatz.** Der Standard-Profilsatz von PipeWire bietet für den Lautsprecher auch das digitale Profil IEC958 an, dessen Mixer-Pfad keinen Lautstärkeregler hat: Damit ist jede Lautstärkeänderung reine Software. Die Konfiguration dieses Projekts bietet nur das analoge Profil an, dessen Pfad den **PCM**-Regler des Lautsprechers für Lautstärke und Stummschaltung nutzt.
-- **Gespeichertes Profil.** Ein früher gespeichertes IEC958-Profil wird ignoriert, weil es nicht mehr existiert; WirePlumber wählt das analoge von selbst.
-- **Nur Hardware.** Der Treiber meldet die Lautstärke des Lautsprechers von −28,37 dB bis −0,94 dB. Da das Maximum negativ ist, verwirft PipeWire diese Dezibel-Angabe und wendet die Lautstärke nur auf die 148 Hardware-Stufen (0 bis 147) an, ohne Software-Lautstärke darüber.
+- **Der Lautstärkeregler des Lautsprechers.** Über USB bietet der Lautsprecher einen Lautstärkeregler (links und rechts) und eine Stummschaltung. Linux zeigt sie als **PCM Playback Volume** und **PCM Playback Switch**.
+- **Die Tasten am Lautsprecher.** Der Lautsprecher meldet sich beim Computer auch als Medientastatur ("HECATE G2000 PRO Consumer Control"): Die Tasten **+** und **−** senden die Lautstärketasten. Deshalb wirken sie genau wie die Lautstärketasten der Tastatur.
+- **Analoges Profil.** Der Standard-Profilsatz von PipeWire bietet für den Lautsprecher auch das digitale Profil IEC958 an, das seinen Lautstärkeregler nicht nutzt: Damit wurde die Lautstärke im Computer abgesenkt. Die Konfiguration dieses Projekts bietet nur das analoge Profil an, das den **PCM**-Regler des Lautsprechers für Lautstärke und Stummschaltung nutzt. Ein früher gewähltes IEC958-Profil wird beiseitegelassen, und WirePlumber verwendet von selbst das analoge.
+- **Lautstärke nur im Lautsprecher.** Der Regler des Lautsprechers hat 148 Stufen (0 bis 147), von −28,37 dB bis −0,94 dB. PipeWire wendet den Lautstärkebalken direkt auf diese Stufen an, ohne Software-Lautstärke darüber.
 - **Nur dieser Lautsprecher.** Die WirePlumber-Regel gilt nur für das USB-Gerät `35bb:b065`.
 - **Dateien.** .deb-Paket: `/usr/share/wireplumber/wireplumber.conf.d/60-edifier-hecate-g2000-pro.conf` und `/usr/share/alsa-card-profile/mixer/profile-sets/edifier-hecate-g2000-pro.conf`. Installation pro Benutzer: dieselben Namen in `~/.config/wireplumber/wireplumber.conf.d/` und `~/.config/alsa-card-profile/mixer/profile-sets/`.
-
-# Einschränkungen {#limitations}
-
-- **Tasten am Lautsprecher.** Taste und Lautstärkeregler am Lautsprecher selbst sind eine eigene Einstellung: ALSA sieht sie nicht, und die Systemlautstärke folgt ihnen nicht.
-- **Lautstärke 0 %.** Entspricht Hardware-Stufe 0. Ob diese Stufe völlige Stille ist, wurde nicht geprüft; für Stille verwenden Sie die Stummschaltung.
-- **Digitale Ausgabe.** Das Profil IEC958 erscheint für diesen Lautsprecher nicht mehr.
-- **WirePlumber 0.4.** Nicht unterstützt: Es verwendet ein anderes Konfigurationsformat (Lua).
-- **Ohne PipeWire.** Systeme nur mit PulseAudio wurden nicht getestet und werden nicht unterstützt.
-- **Ohne systemd.** Starten Sie WirePlumber so neu, wie Ihre Distribution es vorsieht, oder melden Sie sich ab und wieder an.
 
 # Häufige Probleme {#troubleshooting}
 
 - **"The configuration is installed but not loaded yet."** WirePlumber wurde noch nicht neu gestartet: `systemctl --user restart wireplumber.service`.
-- **Kein Ton nach der Installation.** Die Standardausgabe ist zu einem anderen Gerät gewechselt, weil sich der Name der Lautsprecherausgabe geändert hat. Wählen Sie HECATE G2000 PRO als Ausgabe (und in Easy Effects, falls Sie es verwenden).
+- **Kein Ton nach dem Aktivieren.** Die Standardausgabe ist zu einem anderen Gerät gewechselt. Wählen Sie HECATE G2000 PRO als Ausgabe (und in Easy Effects, falls Sie es verwenden).
 - **"PipeWire does not see the speaker."** Prüfen Sie das USB-Kabel und ob der Lautsprecher eingeschaltet ist.
 - **"wpctl is not installed"** (oder `pw-cli`, `amixer`). Installieren Sie das in der Meldung genannte Paket.
 - **Eine Datei erscheint in status als "different".** Es gab schon eine Datei mit demselben Namen und anderem Inhalt. Prüfen Sie sie und führen Sie, wenn sie ersetzt werden darf, `hecate-g2000-pro-volume install --force` aus.
