@@ -56,6 +56,26 @@ class Sources(unittest.TestCase):
                 self.assertIn(used, commands, f"{code}: {used}")
 
 
+class Readme(unittest.TestCase):
+    """The root README follows the reference project: one section per language, same order, same parts."""
+
+    def test_nine_language_sections_with_the_same_parts_and_commands(self):
+        text = (ROOT / "README.md").read_text(encoding="utf-8")
+        names = [build_manual.NATIVE[code] for code in build_manual.LANGUAGES]
+        self.assertEqual(re.findall(r"^## (.+)$", text, re.M), names)
+        index = re.search(r"^\[Português \(Brasil\)\].*?(?=\n\n)", text, re.M | re.S)[0]
+        self.assertEqual(re.findall(r"\[([^\]]+)\]\(#", index), names, "links to every section, in order")
+        sections = re.split(r"^## .+$", text, flags=re.M)[1:]
+        for name, section in zip(names, sections, strict=True):
+            with self.subTest(language=name):
+                self.assertEqual(len(re.findall(r"^### ", section, re.M)), 4, "structure, commands, docs, license")
+                makes = re.findall(r"^(make \w+)", section, re.M)
+                self.assertEqual(makes, ["make tools", "make check", "make build", "make manual"])
+                links = re.findall(r"\]\(((?:docs|CHANGELOG|LICENSE)[^)]*)\)", section)
+                for link in links:
+                    self.assertTrue((ROOT / link).exists(), f"{name}: {link}")
+
+
 class Rendering(unittest.TestCase):
     def test_missing_image_becomes_a_visible_placeholder(self):
         page = build_manual.Page("en")

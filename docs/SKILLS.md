@@ -77,7 +77,7 @@ marcadas como tal. A ordem da categoria X foi mantida e o ponytail veio por últ
 
 | # | Skill @ commit | Regra aplicada | Onde |
 | --- | --- | --- | --- |
-| 28 | softaworks/agent-toolkit `crafting-effective-readmes` @ `3027f20f` | "Who will read this"; nome, descrição, uso; conferir com o estado real | README (usuário + desenvolvedor); manual (usuário, 9 idiomas) |
+| 28 | softaworks/agent-toolkit `crafting-effective-readmes` @ `3027f20f` | "Who will read this"; nome, descrição, uso; conferir com o estado real | README da raiz em 9 idiomas, no formato do projeto modelo (código-fonte: estrutura, comandos, documentação, licença); manual (usuário, 9 idiomas) |
 
 ## X. Documentação e comentários do código (nesta ordem)
 
