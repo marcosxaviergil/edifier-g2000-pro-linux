@@ -1,0 +1,12 @@
+    Prop: key Spa:Pod:Object:Param:Props:mute (65540), flags 00000000
+      Bool false
+    Prop: key Spa:Pod:Object:Param:Props:channelVolumes (65544), flags 00000000
+      Array: child.size 4, child.type Spa:Float
+        Float 0,200240
+        Float 0,200240
+    Prop: key Spa:Pod:Object:Param:Props:softMute (65551), flags 00000000
+      Bool false
+    Prop: key Spa:Pod:Object:Param:Props:softVolumes (65552), flags 00000000
+      Array: child.size 4, child.type Spa:Float
+        Float 1,000000
+        Float 1,000000

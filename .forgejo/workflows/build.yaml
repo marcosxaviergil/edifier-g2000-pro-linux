@@ -1,0 +1,49 @@
+# Runs only when a version tag (v1.0.0) is pushed: tests, builds the .deb, the tarball and the manual and
+# publishes them as that version's release. Tagging the same version again replaces it, so only the
+# newest build remains. Pushes to branches and pull requests start nothing. No secret is needed: the
+# release step uses the job's automatic token, which can write to this repository.
+# Syntax: https://forgejo.org/docs/latest/user/actions/reference/
+name: Hecate G2000 PRO Volume - packages and manual
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: docker
+    container:
+      image: node:22-bookworm-slim
+    steps:
+      - name: Install build tools
+        # make: make tools/lint/build; lintian: package check; weasyprint + fonts: the manual PDF; git: SOURCE_DATE_EPOCH.
+        # tests/test_ci.py checks that every command the steps and `make tools` use is in this list.
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends make python3 python3-pyflakes git ca-certificates lintian \
+            weasyprint fontconfig fonts-dejavu-core fonts-noto-cjk
+          rm -rf /var/lib/apt/lists/*
+      - name: Checkout
+        uses: https://data.forgejo.org/actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Tools and lint (fast checks first)
+        run: |
+          make tools
+          make lint
+      - name: Test the command, the configuration, the build, the release scripts and the manual
+        run: timeout 20m python3 -B -m unittest discover -s tests -v  # a hang fails instead of blocking the runner
+      - name: Build the .deb and the tarball, check the .deb with lintian
+        run: make build
+      - name: Build the manual (every language)
+        run: timeout 20m python3 -B scripts/build_manual.py
+      - name: Verify the tarball's command
+        run: |
+          mkdir -p /tmp/verify
+          tar -xzf dist/hecate-g2000-pro-volume-*.tar.gz -C /tmp/verify
+          /tmp/verify/hecate-g2000-pro-volume-*/hecate-g2000-pro-volume --version
+      - name: Publish the release of this version
+        run: python3 -B scripts/forgejo_release.py
+        env:
+          BUILD_COMMIT: ${{ github.sha }}

@@ -1,0 +1,41 @@
+PipeWire 'pipewire-0' [1.4.2, user@host, cookie:1771097711]
+ └─ Clients:
+        33. pipewire                            [1.4.2, user@host, pid:21558]
+        35. WirePlumber                         [1.4.2, user@host, pid:21557]
+
+Audio
+ ├─ Devices:
+ │      48. alsa_card.pci-0000_01_00.1          [alsa]
+ │      50. alsa_card.usb-Jieli_Technology_HECATE_G2000_PRO_4150353335393909-01 [alsa]
+ │      51. alsa_card.usb-Example_Headset_0001-00 [alsa]
+ │
+ ├─ Sinks:
+ │      43. alsa_output.usb-Example_Headset_0001-00.iec958-stereo [vol: 0.80]
+ │  *   45. alsa_output.usb-Jieli_Technology_HECATE_G2000_PRO_4150353335393909-01.iec958-stereo [vol: 1.00]
+ │      92. easyeffects_sink                    [vol: 1.00]
+ │
+ ├─ Sources:
+ │  *   61. alsa_input.usb-Example_Headset_0001-00.mono-fallback [vol: 1.00]
+ │
+ ├─ Filters:
+ │
+ └─ Streams:
+       150. Spotify
+            137. output_FL       > easyeffects_sink:playback_FL        [active]
+
+Video
+ ├─ Devices:
+ │      34. v4l2_device.pci-0000_06_00.0-usb-0_2.1_1.0 [v4l2]
+ │
+ ├─ Sinks:
+ │
+ ├─ Sources:
+ │  *   88. v4l2_input.pci-0000_06_00.0-usb-0_2.1_1.0
+ │
+ ├─ Filters:
+ │
+ └─ Streams:
+
+Settings
+ └─ Default Configured Devices:
+         0. Audio/Sink    alsa_output.usb-Jieli_Technology_HECATE_G2000_PRO_4150353335393909-01.iec958-stereo

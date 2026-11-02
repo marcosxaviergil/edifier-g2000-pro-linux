@@ -1,0 +1,34 @@
+# Metadata and development tooling. The program itself needs only Python 3.11+ and the standard library.
+[project]
+name = "hecate-g2000-pro-volume"
+version = "1.0.0"
+description = "Edifier Hecate G2000 PRO: the system volume drives the speaker's hardware volume (PipeWire/WirePlumber)"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+# Fields of the Debian package that scripts/build.py writes (DEBIAN/control).
+[tool.debian]
+maintainer = "Marcos Xavier <marcosxaviergiljr@gmail.com>"
+depends = "python3 (>= 3.11), wireplumber (>= 0.5)"
+recommends = "alsa-utils, pipewire-bin"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+# pycodestyle, pyflakes, isort, bugbear, pyupgrade, simplify, bandit (security), blind except
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "S", "BLE"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests and build scripts run local programs on purpose and use temporary paths.
+"tests/*" = ["S101", "S108", "S603", "S607"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["hecate_volume"]
+# tests/support.py puts src/ on sys.path, so it is imported before the package.
+section-order = ["future", "standard-library", "third-party", "test-support", "first-party", "local-folder"]
+
+[tool.ruff.lint.isort.sections]
+test-support = ["support"]

@@ -1,0 +1,4 @@
+numid=3,iface=MIXER,name='PCM Playback Volume'
+  ; type=INTEGER,access=rw---R--,values=2,min=0,max=147,step=0
+  : values=117,117
+  | dBminmax-min=-28.37dB,max=-0.94dB

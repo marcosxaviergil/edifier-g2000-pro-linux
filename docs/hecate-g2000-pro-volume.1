@@ -1,0 +1,71 @@
+.TH HECATE-G2000-PRO-VOLUME 1 "2026-11-02" "hecate-g2000-pro-volume 1.0.0" "User Commands"
+.SH NAME
+hecate-g2000-pro-volume \- system volume drives the Edifier Hecate G2000 PRO hardware volume
+.SH SYNOPSIS
+.B hecate-g2000-pro-volume
+.RB { status | diagnose }
+.br
+.B hecate-g2000-pro-volume
+.RB { install | uninstall }
+.RB [ \-\-force ]
+.br
+.B hecate-g2000-pro-volume \-\-version
+.SH DESCRIPTION
+With its configuration installed, PipeWire and WirePlumber offer only the analog output of the
+Edifier Hecate G2000 PRO USB speaker (USB 35bb:b065). Its mixer path uses the speaker's own ALSA
+controls, so the system volume changes
+.I PCM Playback Volume
+and mute changes
+.IR "PCM Playback Switch" ,
+with no software volume on top. Other audio devices are not changed.
+.PP
+The Debian package installs the configuration for the whole system. Without the package,
+.B install
+copies it for the current user.
+.SH COMMANDS
+.TP
+.B status
+Shows where the configuration is installed, whether WirePlumber loaded it, the active profile,
+the system volume, the hardware controls and the software volume. Changes nothing.
+.TP
+.B diagnose
+Lowers the volume in three steps below the current one, mutes, and checks that the hardware
+controls follow and that the software volume stays at 100%. Restores the volume and mute at the end.
+.TP
+.B install
+Copies the two configuration files below
+.I $XDG_CONFIG_HOME
+(default
+.IR ~/.config ).
+A file with other content is kept unless
+.B \-\-force
+is given.
+.TP
+.B uninstall
+Removes the two files installed by
+.BR install .
+A file with other content is kept unless
+.B \-\-force
+is given.
+.PP
+After install or uninstall, restart WirePlumber:
+.B systemctl \-\-user restart wireplumber.service
+.SH FILES
+.TP
+.I /usr/share/wireplumber/wireplumber.conf.d/60\-edifier\-hecate\-g2000\-pro.conf
+.TQ
+.I ~/.config/wireplumber/wireplumber.conf.d/60\-edifier\-hecate\-g2000\-pro.conf
+WirePlumber rule: the profile set below for USB 35bb:b065.
+.TP
+.I /usr/share/alsa\-card\-profile/mixer/profile\-sets/edifier\-hecate\-g2000\-pro.conf
+.TQ
+.I ~/.config/alsa\-card\-profile/mixer/profile\-sets/edifier\-hecate\-g2000\-pro.conf
+Profile set with the analog output only.
+.SH EXIT STATUS
+0 when the check passes or the command succeeded, 1 when a check fails, 2 on an error.
+.SH REQUIREMENTS
+PipeWire with WirePlumber 0.5 or newer. Commands used: wpctl, pw\-cli, amixer.
+.SH SEE ALSO
+.BR wpctl (1),
+.BR pw\-cli (1),
+.BR amixer (1)
